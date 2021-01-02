@@ -32,7 +32,14 @@ export class UserService {
       if (exists) {
         return { ok: false, error: 'Email already exists' };
       }
-      await this.users.save(this.users.create({ email, password, role }));
+      const user = await this.users.save(
+        this.users.create({ email, password, role }),
+      );
+      const verification = await this.verification.save(
+        this.verification.create({
+          user,
+        }),
+      );
       return { ok: true };
     } catch (e) {
       return { ok: false, error: "Couldn't create account" };
