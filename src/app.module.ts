@@ -8,6 +8,7 @@ import { User } from './user/entities/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from './jwt/jwt.module';
 import { Verification } from './user/entities/verification.entity';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -52,8 +53,12 @@ import { Verification } from './user/entities/verification.entity';
     JwtModule.forRoot({
       privatekey: process.env.PRIVATE_KEY,
     }),
+    MailModule.forRoot({
+      apiKey: process.env.SENDGRID_API_KEY,
+    }),
     UserModule,
     AuthModule,
+    MailModule,
   ],
 })
 export class AppModule {}

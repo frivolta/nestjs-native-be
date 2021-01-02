@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from 'src/jwt/jwt.service';
+import { MailService } from 'src/mail/mail.service';
 import { Repository } from 'typeorm';
 import {
   CreateAccountInput,
@@ -20,6 +21,7 @@ export class UserService {
     @InjectRepository(Verification)
     private verification: Repository<Verification>,
     private readonly jwtService: JwtService,
+    private readonly mailService: MailService,
   ) {}
 
   async createAccount({
@@ -40,6 +42,7 @@ export class UserService {
           user,
         }),
       );
+      await this.mailService.sendVerificationEmail();
       return { ok: true };
     } catch (e) {
       return { ok: false, error: "Couldn't create account" };
