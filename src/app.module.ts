@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
+import { User } from './user/entities/user.entity';
 
 
 @Module({
@@ -29,7 +30,7 @@ import * as Joi from 'joi';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [],
+      entities: [User],
       logging: process.env.NODE_ENV !=='prod' && process.env.NODE_ENV!=='test',
       synchronize: process.env.NODE_ENV !== "prod",
     }),
