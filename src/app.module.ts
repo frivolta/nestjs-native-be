@@ -5,6 +5,7 @@ import { UserModule } from './user/user.module';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { User } from './user/entities/user.entity';
+import { AuthModule } from './auth/auth.module';
 
 
 @Module({
@@ -39,6 +40,7 @@ import { User } from './user/entities/user.entity';
       installSubscriptionHandlers: true,
     }),
     UserModule,
+    AuthModule,
   ],
 })
 export class AppModule {}
