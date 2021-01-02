@@ -6,14 +6,14 @@ import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { User } from './user/entities/user.entity';
 import { AuthModule } from './auth/auth.module';
-
+import { JwtModule } from './jwt/jwt.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: process.env.NODE_ENV === "dev" ? ".env.dev" : ".env.test",
-      ignoreEnvFile: process.env.NODE_ENV === "prod",
+      envFilePath: process.env.NODE_ENV === 'dev' ? '.env.dev' : '.env.test',
+      ignoreEnvFile: process.env.NODE_ENV === 'prod',
       validationSchema: Joi.object({
         NODE_ENV: Joi.string().valid('dev', 'prod', 'test').required(),
         DB_HOST: Joi.string().required(),
@@ -22,7 +22,7 @@ import { AuthModule } from './auth/auth.module';
         DB_PASSWORD: Joi.string().required(),
         DB_DATABASE: Joi.string().required(),
         PRIVATE_KEY: Joi.string().required(),
-      })
+      }),
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -32,12 +32,24 @@ import { AuthModule } from './auth/auth.module';
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
       entities: [User],
-      logging: process.env.NODE_ENV !=='prod' && process.env.NODE_ENV!=='test',
-      synchronize: process.env.NODE_ENV !== "prod",
+      logging:
+        process.env.NODE_ENV !== 'prod' && process.env.NODE_ENV !== 'test',
+      synchronize: process.env.NODE_ENV !== 'prod',
     }),
     GraphQLModule.forRoot({
-      autoSchemaFile: true,
       installSubscriptionHandlers: true,
+      autoSchemaFile: true,
+      context: ({ req, connection }) => {
+        const TOKEN_KEY = 'x-jwt';
+        if (req) {
+          return { token: req.headers[TOKEN_KEY] };
+        } else if (connection) {
+          return { token: connection.context[TOKEN_KEY] };
+        }
+      },
+    }),
+    JwtModule.forRoot({
+      privatekey: process.env.PRIVATE_KEY,
     }),
     UserModule,
     AuthModule,

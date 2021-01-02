@@ -5,6 +5,10 @@ import {
   CreateAccountInput,
   CreateAccountOutput,
 } from './dtos/create-account.dto';
+import {
+  EmailProfileInput,
+  EmailProfileOutput,
+} from './dtos/email-profile.dto';
 import { UserProfileInput, UserProfileOutput } from './dtos/user-profile.dto';
 import { User } from './entities/user.entity';
 
@@ -32,6 +36,17 @@ export class UserService {
   async findById({ userId }: UserProfileInput): Promise<UserProfileOutput> {
     try {
       const user = await this.users.findOneOrFail({ id: userId });
+      if (user) {
+        return { ok: true, user };
+      }
+    } catch (error) {
+      return { ok: false, error: 'User not found' };
+    }
+  }
+
+  async findByEmail(email: string): Promise<EmailProfileOutput> {
+    try {
+      const user = await this.users.findOneOrFail({ email });
       if (user) {
         return { ok: true, user };
       }
