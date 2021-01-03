@@ -55,6 +55,7 @@ import { MailModule } from './mail/mail.module';
     }),
     MailModule.forRoot({
       apiKey: process.env.SENDGRID_API_KEY,
+      emailFrom: process.env.SENDGRID_FROM_ADDRESS,
     }),
     UserModule,
     AuthModule,
