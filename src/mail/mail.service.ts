@@ -31,8 +31,7 @@ export class MailService {
       sgMail.setApiKey(apiKey);
       await sgMail.send(composedMessage);
       return true;
-    } catch (err) {
-      console.error(err);
+    } catch {
       return false;
     }
   }
